@@ -1,0 +1,18 @@
+meta {
+  name: Actualizar Espacio
+  type: http
+  seq: 4
+}
+
+patch {
+  url: {{baseUrl}}/espacios/1
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "nombre": "Auditorio Principal Actualizado",
+    "capacidad": 250
+  }
+}

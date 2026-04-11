@@ -1,0 +1,20 @@
+meta {
+  name: Crear Material
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{baseUrl}}/materiales
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "nombre": "Proyector",
+    "cantidad": 10,
+    "tiempoPrestamo": 100,
+    "cantidadDisponible": 100
+  }
+}

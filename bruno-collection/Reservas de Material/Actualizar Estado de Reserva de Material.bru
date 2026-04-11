@@ -1,0 +1,17 @@
+meta {
+  name: Actualizar Estado de Reserva de Material
+  type: http
+  seq: 7
+}
+
+patch {
+  url: {{baseUrl}}/reservas-material/estado/1
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "estado": "Aprobado"
+  }
+}

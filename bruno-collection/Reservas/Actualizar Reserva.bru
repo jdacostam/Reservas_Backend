@@ -1,0 +1,17 @@
+meta {
+  name: Actualizar Reserva
+  type: http
+  seq: 5
+}
+
+patch {
+  url: {{baseUrl}}/reservas/1
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "estado": "Aprobado"
+  }
+}

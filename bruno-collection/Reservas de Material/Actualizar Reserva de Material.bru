@@ -1,0 +1,18 @@
+meta {
+  name: Actualizar Reserva de Material
+  type: http
+  seq: 4
+}
+
+patch {
+  url: {{baseUrl}}/reservas-material/1
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "cantidad": 3,
+    "estado": "Aprobado"
+  }
+}

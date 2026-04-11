@@ -1,0 +1,23 @@
+meta {
+  name: Crear Calendario
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{baseUrl}}/calendario
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "espacioId": 1,
+    "fecha": "2025-11-21",
+    "horaInicio": "08:00:00",
+    "horaFin": "10:00:00",
+    "disponible": true,
+    "capacidad": 100,
+    "disponibilidad": true
+  }
+}

@@ -1,0 +1,17 @@
+meta {
+  name: Actualizar Observaciones de Entrega
+  type: http
+  seq: 9
+}
+
+patch {
+  url: {{baseUrl}}/reservas/observaciones/1
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "observacionesEntrega": "Todo entregado en buen estado"
+  }
+}

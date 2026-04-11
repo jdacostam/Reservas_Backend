@@ -1,0 +1,18 @@
+meta {
+  name: Actualizar Material
+  type: http
+  seq: 4
+}
+
+patch {
+  url: {{baseUrl}}/materiales/1
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "nombre": "Proyector Actualizado",
+    "cantidad": 15
+  }
+}

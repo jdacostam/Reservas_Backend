@@ -1,0 +1,19 @@
+meta {
+  name: Crear Reserva
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{baseUrl}}/reservas
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "calendarioId": 4,
+    "usuarioId": "mafgonzalezs@udistrital.edu.co",
+    "estado": "pendiente"
+  }
+}

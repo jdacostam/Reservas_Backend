@@ -1,0 +1,27 @@
+meta {
+  name: Crear Reserva de Material
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{baseUrl}}/reservas-material
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "materialId": 3,
+    "usuarioId": "mafgonzalezs@udistrital.edu.co",
+    "cantidad": 2,
+    "fecha": "2025-11-21",
+    "horaInicio": "08:00",
+    "horaFin": "17:00",
+    "fechaReserva": "2025-11-21T08:00:00.000Z",
+    "fechaDevolucion": "2025-11-22T17:00:00.000Z",
+    "fechaLimite": "2025-11-22T23:59:59.000Z",
+    "estado": "Pendiente",
+    "observacionesEntrega": ""
+  }
+}

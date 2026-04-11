@@ -1,0 +1,17 @@
+meta {
+  name: Actualizar Calendario
+  type: http
+  seq: 4
+}
+
+patch {
+  url: {{baseUrl}}/calendario/1
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "disponible": false
+  }
+}
