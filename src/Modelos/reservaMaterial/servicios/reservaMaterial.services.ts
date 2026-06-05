@@ -7,7 +7,6 @@ import { Usuario } from '../../../database/Entidades/usuario.entity';
 import { CreateReservaMaterialDto } from '../dto/create.dto';
 import { UpdateReservaMaterialDto } from '../dto/update.dto';
 import { EstadoReservaMaterial } from 'src/database/Entidades/reservaMaterial.entity';
-//import { format } from 'date-fns';
 import * as dayjs from 'dayjs';
 import { DataSource } from 'typeorm';
 
@@ -23,6 +22,13 @@ export class ReservaMaterialService {
     private readonly dataSource: DataSource,
   ) {}
 
+  /**
+   * Crea una nueva reserva de material usando una transacción.
+   * Disminuye la cantidad disponible de materiales y guarda la reserva.
+   * @param dto DTO con los detalles para la reserva del material.
+   * @returns La reserva de material creada y guardada.
+   * @throws Error si el material no existe o no tiene cantidad disponible suficiente.
+   */
   async create(dto: CreateReservaMaterialDto) {
     return await this.dataSource.transaction(async (manager) => {
       const materialRepo = manager.getRepository(Material);
@@ -63,16 +69,30 @@ export class ReservaMaterialService {
     });
   }
 
+  /**
+   * Obtiene todas las reservas de materiales en el sistema.
+   * @returns Lista de todas las reservas de materiales con relaciones de material y usuario.
+   */
   findAll() {
     return this.reservaMaterialRepository.find({
       relations: ['material', 'usuario'],
     });
   }
 
+  /**
+   * Obtiene una única reserva de material por su ID.
+   * @param id ID de la reserva.
+   * @returns La reserva de material correspondiente o null si no se encuentra.
+   */
   findOne(id: number) {
     return this.reservaMaterialRepository.findOne({ where: { id } });
   }
 
+  /**
+   * Obtiene las reservas de material de un usuario a partir de su correo electrónico.
+   * @param email Correo electrónico del usuario.
+   * @returns Lista de reservas de material con sus relaciones.
+   */
   async findByEmail(email: string) {
     return this.reservaMaterialRepository.find({
       where: {
@@ -82,6 +102,12 @@ export class ReservaMaterialService {
     });
   }
 
+  /**
+   * Actualiza la información de una reserva de material y sus relaciones si son especificadas.
+   * @param id ID de la reserva.
+   * @param dto DTO con los campos que se van a actualizar.
+   * @returns La reserva de material actualizada.
+   */
   async update(id: number, dto: UpdateReservaMaterialDto) {
     const reserva = await this.findOne(id);
     if (dto.materialId) {
@@ -98,18 +124,33 @@ export class ReservaMaterialService {
     return this.reservaMaterialRepository.save(reserva);
   }
 
+  /**
+   * Remueve permanentemente una reserva de material.
+   * @param id ID de la reserva a eliminar.
+   * @returns Resultado del borrado de TypeORM.
+   */
   remove(id: number) {
     return this.reservaMaterialRepository.delete(id);
   }
 
-  //updateEstado(id: number, estado: EstadoReservaMaterial) {
-  //  return this.reservaMaterialRepository.update(id, { estado });
-  //}
-
+  /**
+   * Modifica el estado de una reserva de material (obsoleto).
+   * @param id ID de la reserva.
+   * @param estado Estado de reserva.
+   * @returns Resultado del update en base de datos.
+   */
   updateHoraInicio(id: number, estado: EstadoReservaMaterial) {
     return this.reservaMaterialRepository.update(id, { estado });
   }
 
+  /**
+   * Realiza la transición de estado de una reserva de material (ej. de Pendiente a Entregado, o de Entregado a Devuelto).
+   * Calcula automáticamente fechas límites basándose en el tiempo de préstamo del material o registra la fecha de devolución y hora de finalización.
+   * @param id ID de la reserva.
+   * @param estado Estado de destino deseado para la reserva.
+   * @returns Resultado de la actualización en base de datos.
+   * @throws Error si la transición de estado no es válida.
+   */
   async updateEstado(id: number, estado: EstadoReservaMaterial) {
     const ahora = new Date();
     const horaActual = ahora.toTimeString().slice(0, 5);
@@ -137,6 +178,13 @@ export class ReservaMaterialService {
     return this.reservaMaterialRepository.update(id, dataToUpdate);
   }
 
+  /**
+   * Actualiza la calificación y el comentario al culminar una reserva de material.
+   * @param id ID de la reserva de material.
+   * @param calificacion Valor de calificación.
+   * @param comentario Comentario descriptivo.
+   * @returns Resultado de la actualización en base de datos.
+   */
   updateCalificacion(id: number, calificacion: number, comentario?: string) {
     return this.reservaMaterialRepository.update(id, {
       calificacion,
@@ -144,6 +192,12 @@ export class ReservaMaterialService {
     });
   }
 
+  /**
+   * Actualiza las observaciones generadas sobre la entrega del material.
+   * @param id ID de la reserva de material.
+   * @param observacionesEntrega Texto con observaciones.
+   * @returns Resultado de la actualización en base de datos.
+   */
   updateObservacionesEntrega(id: number, observacionesEntrega: string) {
     return this.reservaMaterialRepository.update(id, { observacionesEntrega });
   }

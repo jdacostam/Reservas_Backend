@@ -19,7 +19,7 @@ export class Usuario {
   nombre: string;
 
   @Exclude()
-  @Column({ type: 'varchar', length: 45 })
+  @Column({ type: 'varchar', length: 100 })
   password: string;
 
   @Column({ type: 'enum', enum: TipoUsuario })

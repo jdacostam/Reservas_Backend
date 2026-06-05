@@ -4,6 +4,7 @@ import { usuarioService } from '../servicios/usuario.services';
 import { crearUsuarioDto, actualizarUsuarioDto } from '../dto/usuario.dto';
 import { crearLoginDto } from '../dto/login.dto';
 import { TipoUsuario } from 'src/database/Entidades/usuario.entity';
+import { restablecerPasswordDto } from '../dto/restablecer-password.dto';
 
 describe('UsuarioController', () => {
   let controller: UsuarioController;
@@ -17,6 +18,7 @@ describe('UsuarioController', () => {
     actualizarUsuario: jest.fn(),
     eliminarUsuario: jest.fn(),
     login: jest.fn(),
+    restablecerPassword: jest.fn(),
   };
 
   beforeEach(async () => {
@@ -382,6 +384,69 @@ describe('UsuarioController', () => {
       const result = controller.login(loginDto);
 
       expect(result).toEqual(expectedResponse);
+    });
+  });
+
+  describe('restablecerPassword', () => {
+    it('debe restablecer la contraseña exitosamente', async () => {
+      const data: restablecerPasswordDto = {
+        email: 'test@example.com',
+        cedula: '1234567890',
+        nuevaPassword: 'newpassword123',
+      };
+
+      const expectedResponse = {
+        statusCode: 200,
+        message: 'Contraseña restablecida exitosamente',
+      };
+
+      mockUsuarioService.restablecerPassword.mockResolvedValue(expectedResponse);
+
+      const result = await controller.restablecerPassword(data);
+
+      expect(result).toEqual(expectedResponse);
+      expect(mockUsuarioService.restablecerPassword).toHaveBeenCalledWith(data);
+      expect(mockUsuarioService.restablecerPassword).toHaveBeenCalledTimes(1);
+    });
+
+    it('debe retornar error cuando el usuario no existe', async () => {
+      const data: restablecerPasswordDto = {
+        email: 'noexiste@example.com',
+        cedula: '1234567890',
+        nuevaPassword: 'newpassword123',
+      };
+
+      const expectedResponse = {
+        statusCode: 404,
+        message: 'Usuario no encontrado',
+      };
+
+      mockUsuarioService.restablecerPassword.mockResolvedValue(expectedResponse);
+
+      const result = await controller.restablecerPassword(data);
+
+      expect(result).toEqual(expectedResponse);
+      expect(mockUsuarioService.restablecerPassword).toHaveBeenCalledWith(data);
+    });
+
+    it('debe retornar error cuando la cédula no coincide', async () => {
+      const data: restablecerPasswordDto = {
+        email: 'test@example.com',
+        cedula: 'wrong_cedula',
+        nuevaPassword: 'newpassword123',
+      };
+
+      const expectedResponse = {
+        statusCode: 400,
+        message: 'La cédula no coincide con el correo registrado',
+      };
+
+      mockUsuarioService.restablecerPassword.mockResolvedValue(expectedResponse);
+
+      const result = await controller.restablecerPassword(data);
+
+      expect(result).toEqual(expectedResponse);
+      expect(mockUsuarioService.restablecerPassword).toHaveBeenCalledWith(data);
     });
   });
 });

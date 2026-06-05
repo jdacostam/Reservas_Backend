@@ -41,5 +41,5 @@ for (let i = 0; i < totalReservas; i++) {
 }
 
 // Guardar el archivo reservas.txt
-fs.writeFileSync('src/data/reservas.txt', reservas.join('\n'), 'utf-8');
+fs.writeFileSync('src/database/data/reservas.txt', reservas.join('\n'), 'utf-8');
 console.log('Archivo reservas.txt generado con éxito');

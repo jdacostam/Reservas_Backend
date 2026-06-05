@@ -6,7 +6,11 @@ import { enviroments } from './enviroments';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   // Evitar el error de protocolo cruzado (htto/https)
-  app.enableCors();
+  app.enableCors({
+    origin: true,
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
+    credentials: true,
+  });
   app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
   await app.listen(process.env.PORT || 3000);
   console.log(`Ambiente de ejecución ${process.env.NODE_ENV}`);

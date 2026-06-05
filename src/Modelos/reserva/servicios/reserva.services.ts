@@ -23,6 +23,13 @@ export class ReservaService {
     private readonly usuarioRepository: Repository<Usuario>,
   ) {}
 
+  /**
+   * Crea una reserva de espacio en la base de datos.
+   * Valida existencia del calendario, disponibilidad de cupos y tipo de usuario para aplicar reglas de reserva.
+   * @param dto DTO con los datos para crear la reserva.
+   * @returns La reserva guardada.
+   * @throws NotFoundException si el calendario o usuario no son encontrados, o si no hay cupos.
+   */
   async create(dto: CreateReservaDto) {
     const calendario = await this.calendarioRepository.findOne({
       where: { id: dto.calendarioId },
@@ -74,12 +81,21 @@ export class ReservaService {
     return this.reservaRepository.save(reserva);
   }
 
+  /**
+   * Obtiene todas las reservas registradas.
+   * @returns Arreglo de todas las reservas con sus relaciones de calendario y usuario.
+   */
   findAll() {
     return this.reservaRepository.find({
       relations: ['calendario', 'usuario'],
     });
   }
 
+  /**
+   * Busca una única reserva por su ID.
+   * @param id ID de la reserva.
+   * @returns La reserva encontrada.
+   */
   findOne(id: number) {
     return this.reservaRepository.findOne({
       where: { id },
@@ -87,6 +103,11 @@ export class ReservaService {
     });
   }
 
+  /**
+   * Busca todas las reservas asociadas al correo de un usuario específico.
+   * @param email Correo electrónico del usuario.
+   * @returns Arreglo de reservas del usuario.
+   */
   async findByEmail(email: string) {
     return this.reservaRepository.find({
       where: { usuario: { email } },
@@ -94,6 +115,12 @@ export class ReservaService {
     });
   }
 
+  /**
+   * Actualiza la información de una reserva existente.
+   * @param id ID de la reserva.
+   * @param dto DTO con los nuevos datos a modificar.
+   * @returns La reserva con sus datos actualizados o null si no se encuentra.
+   */
   async update(id: number, dto: UpdateReservaDto) {
     const reserva = await this.reservaRepository.findOne({ where: { id } });
     if (!reserva) return null;
@@ -123,8 +150,13 @@ export class ReservaService {
     return this.reservaRepository.save(reserva);
   }
 
+  /**
+   * Obtiene el listado de disponibilidad y detalles de reservas de un espacio y fecha específicos.
+   * @param espacioId ID del espacio físico.
+   * @param fecha Fecha de consulta.
+   * @returns Objeto de disponibilidad detallada.
+   */
   async getDisponibilidadPorEspacioYFecha(espacioId: number, fecha: string) {
-    // Buscar calendarios para ese espacio y fecha
     const calendarios = await this.calendarioRepository.find({
       where: {
         espacio: { id: espacioId },
@@ -150,14 +182,32 @@ export class ReservaService {
     return { disponibilidad };
   }
 
+  /**
+   * Elimina permanentemente una reserva por su ID.
+   * @param id ID de la reserva a eliminar.
+   * @returns Resultado del borrado de TypeORM.
+   */
   remove(id: number) {
     return this.reservaRepository.delete(id);
   }
 
+  /**
+   * Actualiza únicamente la calificación y el comentario de una reserva.
+   * @param id ID de la reserva.
+   * @param calificacion Valor de calificación.
+   * @param comentario Comentario descriptivo opcional.
+   * @returns Resultado del update en base de datos.
+   */
   updateCalificacion(id: number, calificacion: number, comentario?: string) {
     return this.reservaRepository.update(id, { calificacion, comentario });
   }
 
+  /**
+   * Actualiza únicamente las observaciones sobre la entrega de una reserva.
+   * @param id ID de la reserva.
+   * @param observacionesEntrega Texto de las observaciones de entrega.
+   * @returns Resultado del update en base de datos.
+   */
   updateObservacionesEntrega(id: number, observacionesEntrega: string) {
     return this.reservaRepository.update(id, { observacionesEntrega });
   }
